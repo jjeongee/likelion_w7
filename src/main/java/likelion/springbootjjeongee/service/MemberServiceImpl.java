@@ -1,0 +1,40 @@
+package likelion.springbootjjeongee.service;
+
+import likelion.springbootjjeongee.domain.Member;
+import likelion.springbootjjeongee.repository.MemberRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class MemberServiceImpl implements MemberService {
+    private final MemberRepository memberRepository;
+    @Autowired
+    public MemberServiceImpl(MemberRepository memberRepository){
+        this.memberRepository = memberRepository;
+    }
+
+    @org.springframework.transaction.annotation.Transactional
+    public void save(Member member){
+        memberRepository.save(member);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Member findById(Long id){
+        Optional<Member> optionalMember = memberRepository.findById(id);
+        if(optionalMember.isPresent()){
+            Member member = optionalMember.get();
+            return member;
+        }
+        throw new IllegalStateException("너가 찾는 멤버는 없어");
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public List<Member> findAll(){
+        return memberRepository.findAll();
+    }
+}
